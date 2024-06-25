@@ -4,6 +4,7 @@ from tkinter import filedialog
 from tkinter import messagebox
 from tkinter import ttk
 
+
 class CSVViewer:
     def __init__(self, root):
         self.root = root
