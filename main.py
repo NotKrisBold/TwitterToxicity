@@ -1,14 +1,9 @@
-import pandas as pd
-import matplotlib.pyplot as plt
-import seaborn as sns
+# Define the path to your text file
+file_path = 'perspective_api.txt'
 
-df = pd.read_csv('sample_vaccine.csv', low_memory=False)
+# Open the file and read the API key
+with open(file_path, 'r') as file:
+    api_key = file.read().strip()
 
-print(df.head())
-
-# Informazioni generali
-print(df.info())
-
-# Statistiche descrittive
-print(df.describe())
-
+# Print the API key to verify
+print(f'API Key: {api_key}')

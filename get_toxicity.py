@@ -3,8 +3,11 @@ import numpy as np
 import requests
 import time
 
-# Chiave API
-api_key = 'AIzaSyA02KfS18hcPNRFPgtvcy46XFyIk46jpqc'
+api_key_file_path = 'perspective_api.txt'
+
+# Open the file and read the API key
+with open(api_key_file_path, 'r') as file:
+    api_key = file.read().strip()
 
 # Read the CSV file
 df = pd.read_csv('sample_vaccine.csv', low_memory=False)
