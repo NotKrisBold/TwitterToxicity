@@ -1,16 +1,18 @@
 import pandas as pd
 import matplotlib.pyplot as plt
-import numpy as np
 
 # Lettura file csv
 df = pd.read_csv('sample_vaccine_with_toxicity.csv', low_memory=False)
+
+# print(df.info())
 
 # Correzzione dati colonna is_reply
 df['is_reply'] = df['is_reply'].apply(lambda x: x if x in [True, False] else False)
 print("is_reply:", df['is_reply'].unique())
 
 # Conversione hashtags in list
-df['hashtags'] = df['hashtags'].str.strip().str.replace(r'[\[\]\']', '', regex=True).str.split(",").apply(lambda x: ['#' + item.strip() for item in x] if isinstance(x, list) else x)
+df['hashtags'] = df['hashtags'].str.strip().str.replace(r'[\[\]\']', '', regex=True).str.split(",").apply(
+    lambda x: ['#' + item.strip() for item in x] if isinstance(x, list) else x)
 print("Dataframe size:", len(df))
 
 # Conversione della colonna 'created_at' in datetime
@@ -56,17 +58,20 @@ plt.tight_layout()
 plt.show()
 
 # HASHTAG PIÙ TOSSICI
-df_exploded = df.explode('hashtags')
-mean_toxicity_per_hashtag = df_exploded.groupby('hashtags')['toxicity'].mean().reset_index().sort_values(by='toxicity', ascending=False).head(10)
+# TODO DA RIGUARDARE
+df_exploded = df.dropna(subset=['hashtags']).explode('hashtags')
+hashtag_toxicity = df_exploded.groupby('hashtags')['toxicity'].mean()
+toxic_hashtags = hashtag_toxicity[hashtag_toxicity > 0.1]
+df_filtered = df_exploded[df_exploded['hashtags'].isin(toxic_hashtags.index)]
+hashtag_counts = df_filtered['hashtags'].value_counts()
+top_10_hashtags = hashtag_counts.head(5)
 
-plt.figure(figsize=(12, 8))
-plt.barh(mean_toxicity_per_hashtag['hashtags'], mean_toxicity_per_hashtag['toxicity'], color='salmon')
-plt.title('Top 10 Hashtag per Media della Tossicità')
-plt.xlabel('Media della Tossicità')
+plt.figure(figsize=(15, 8))
+top_10_hashtags.plot(kind='barh', color='skyblue')
+plt.xlabel('Frequenza')
 plt.ylabel('Hashtag')
+plt.title('Top 5 hashtag più popolari e più tossici')
 plt.gca().invert_yaxis()
-plt.grid(True)
-plt.tight_layout()
 plt.show()
 
 # TOSSICITÀ NEL TEMPO NEGLI HASHTAG PIÙ FREQUENTI
@@ -83,7 +88,7 @@ plt.figure(figsize=(14, 8))
 for hashtag in top_hashtags_list:
     hashtag_data = mean_toxicity_per_month_hashtag[mean_toxicity_per_month_hashtag['hashtags'] == hashtag]
     plt.plot(hashtag_data['year_month'], hashtag_data['toxicity'], marker='o', label=hashtag)
-plt.title('Andamento della Tossicità dei Top 10 Hashtag nel Tempo')
+plt.title('Andamento della Tossicità top 5 Hashtag')
 plt.xlabel('Mese')
 plt.ylabel('Media della Tossicità')
 plt.legend(title='Hashtag', bbox_to_anchor=(1.05, 1), loc='upper left')
@@ -91,4 +96,3 @@ plt.grid(True)
 plt.xticks(rotation=45)
 plt.tight_layout()
 plt.show()
-
