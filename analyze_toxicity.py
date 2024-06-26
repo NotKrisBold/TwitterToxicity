@@ -70,13 +70,13 @@ plt.figure(figsize=(15, 8))
 top_10_hashtags.plot(kind='barh', color='skyblue')
 plt.xlabel('Frequenza')
 plt.ylabel('Hashtag')
-plt.title('Top 5 hashtag più popolari e più tossici')
+plt.title('Top 5 hashtag più tossici e popolari')
 plt.gca().invert_yaxis()
 plt.show()
 
-# TOSSICITÀ NEL TEMPO NEGLI HASHTAG PIÙ FREQUENTI
+# TOSSICITÀ NEL TEMPO NEGLI HASHTAG PIÙ USATI
 df_exploded = df.dropna(subset=['hashtags']).explode('hashtags')
-top_hashtags_list = df_exploded['hashtags'].value_counts().head(5).index.tolist()
+top_hashtags_list = df_exploded['hashtags'].value_counts().head(10).index.tolist()
 df_top_hashtags = df_exploded[df_exploded['hashtags'].isin(top_hashtags_list)]
 
 df_top_hashtags.loc[:, 'year_month'] = df_top_hashtags['created_at'].dt.to_period('M')
@@ -88,7 +88,7 @@ plt.figure(figsize=(14, 8))
 for hashtag in top_hashtags_list:
     hashtag_data = mean_toxicity_per_month_hashtag[mean_toxicity_per_month_hashtag['hashtags'] == hashtag]
     plt.plot(hashtag_data['year_month'], hashtag_data['toxicity'], marker='o', label=hashtag)
-plt.title('Andamento della Tossicità top 5 Hashtag')
+plt.title('Andamento della Tossicità nei 10 Hashtag più Popolari')
 plt.xlabel('Mese')
 plt.ylabel('Media della Tossicità')
 plt.legend(title='Hashtag', bbox_to_anchor=(1.05, 1), loc='upper left')
