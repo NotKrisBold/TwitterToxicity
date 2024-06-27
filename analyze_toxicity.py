@@ -61,7 +61,7 @@ plt.show()
 # TODO DA RIGUARDARE
 df_exploded = df.dropna(subset=['hashtags']).explode('hashtags')
 hashtag_toxicity = df_exploded.groupby('hashtags')['toxicity'].mean()
-toxic_hashtags = hashtag_toxicity[hashtag_toxicity > 0.1]
+toxic_hashtags = hashtag_toxicity[hashtag_toxicity > 0.7]
 df_filtered = df_exploded[df_exploded['hashtags'].isin(toxic_hashtags.index)]
 hashtag_counts = df_filtered['hashtags'].value_counts()
 top_10_hashtags = hashtag_counts.head(5)
