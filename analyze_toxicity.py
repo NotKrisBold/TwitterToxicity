@@ -65,10 +65,10 @@ hashtag_toxicity = df_exploded.groupby('hashtags')['toxicity'].mean()
 toxic_hashtags = hashtag_toxicity[hashtag_toxicity > 0.1]
 df_filtered = df_exploded[df_exploded['hashtags'].isin(toxic_hashtags.index)]
 hashtag_counts = df_filtered['hashtags'].value_counts()
-top_10_hashtags = hashtag_counts.head(5)
+top_5_hashtags = hashtag_counts.head(5)
 
 plt.figure(figsize=(15, 8))
-top_10_hashtags.plot(kind='barh', color='skyblue')
+top_5_hashtags.plot(kind='barh', color='skyblue')
 plt.xlabel('Frequenza')
 plt.ylabel('Hashtag')
 plt.title('Top 5 hashtag più tossici e popolari')
