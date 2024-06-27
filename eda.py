@@ -51,4 +51,23 @@ plt.title('Distribuzione retweet', fontsize=16)
 plt.axis('equal')
 plt.show()
 
-"""# Analisi tossicità"""
+hashtags = df.dropna(subset=['hashtags'])['hashtags']
+
+hashtags_counts = {}
+for hashtags_list in hashtags:
+    for hashtag in hashtags_list:
+        if hashtag in hashtags_counts:
+            hashtags_counts[hashtag] += 1
+        else:
+            hashtags_counts[hashtag] = 1
+
+sorted_hashtags = sorted(hashtags_counts.items(), key=lambda x: x[1], reverse=True)
+top_hashtags = dict(sorted_hashtags[:10])
+
+plt.figure(figsize=(8, 4))
+plt.barh(list(top_hashtags.keys()), list(top_hashtags.values()), color='skyblue')
+plt.xlabel('Frequenza')
+plt.ylabel('Hashtags')
+plt.title('Top 10 hashtags più frequenti')
+plt.gca().invert_yaxis()
+plt.show()

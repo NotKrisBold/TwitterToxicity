@@ -19,6 +19,27 @@ print("Dataframe size:", len(df))
 # Conversione della colonna 'created_at' in datetime
 df['created_at'] = pd.to_datetime(df['created_at']).dt.tz_localize(None)
 
+# HASHTAG PIU' USATI
+hashtags = df.dropna(subset=['hashtags'])['hashtags']
+hashtags_counts = {}
+for hashtags_list in hashtags:
+    for hashtag in hashtags_list:
+        if hashtag in hashtags_counts:
+            hashtags_counts[hashtag] += 1
+        else:
+            hashtags_counts[hashtag] = 1
+
+sorted_hashtags = sorted(hashtags_counts.items(), key=lambda x: x[1], reverse=True)
+top_hashtags = dict(sorted_hashtags[:10])
+
+plt.figure(figsize=(12, 4))
+plt.barh(list(top_hashtags.keys()), list(top_hashtags.values()), color='skyblue')
+plt.xlabel('Frequenza')
+plt.ylabel('Hashtags')
+plt.title('Top 10 hashtags più frequenti')
+plt.gca().invert_yaxis()
+plt.show()
+
 # ANALISI TOSSICITÀ MEDIA PER MESE
 df['year_month'] = df['created_at'].dt.to_period('M')
 mean_toxicity_per_month = df.groupby('year_month')['toxicity'].mean().reset_index()
@@ -58,17 +79,17 @@ plt.xticks(range(0, 24))
 plt.tight_layout()
 plt.show()
 
-# HASHTAG PIÙ TOSSICI
+# DISTRIBUZIONE UTILIZZO PER HASHTAG PIU' TOSSICI
 # TODO DA RIGUARDARE
 df_exploded = df.dropna(subset=['hashtags']).explode('hashtags')
 hashtag_toxicity = df_exploded.groupby('hashtags')['toxicity'].mean()
-toxic_hashtags = hashtag_toxicity[hashtag_toxicity > 0.1]
+# toxic_hashtags = hashtag_toxicity[hashtag_toxicity > 0.1]
+toxic_hashtags = hashtag_toxicity.nlargest(10)
 df_filtered = df_exploded[df_exploded['hashtags'].isin(toxic_hashtags.index)]
 hashtag_counts = df_filtered['hashtags'].value_counts()
-top_5_hashtags = hashtag_counts.head(5)
 
 plt.figure(figsize=(15, 8))
-top_5_hashtags.plot(kind='barh', color='skyblue')
+hashtag_counts.plot(kind='barh', color='skyblue')
 plt.xlabel('Frequenza')
 plt.ylabel('Hashtag')
 plt.title('Top 5 hashtag più tossici e popolari')
