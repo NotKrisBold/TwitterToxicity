@@ -1,5 +1,6 @@
 import pandas as pd
 import matplotlib.pyplot as plt
+import numpy as np
 
 # Lettura file csv
 df = pd.read_csv('sample_vaccine_with_toxicity.csv', low_memory=False)
@@ -7,7 +8,7 @@ df = pd.read_csv('sample_vaccine_with_toxicity.csv', low_memory=False)
 # print(df.info())
 
 # Correzzione dati colonna is_reply
-df['is_reply'] = df['is_reply'].apply(lambda x: x if x in [True, False] else False)
+df['is_reply'] = df['is_reply'].apply(lambda x: x if x in [True, False] else np.nan)
 print("is_reply:", df['is_reply'].unique())
 
 # Conversione hashtags in list
@@ -61,7 +62,7 @@ plt.show()
 # TODO DA RIGUARDARE
 df_exploded = df.dropna(subset=['hashtags']).explode('hashtags')
 hashtag_toxicity = df_exploded.groupby('hashtags')['toxicity'].mean()
-toxic_hashtags = hashtag_toxicity[hashtag_toxicity > 0.7]
+toxic_hashtags = hashtag_toxicity[hashtag_toxicity > 0.1]
 df_filtered = df_exploded[df_exploded['hashtags'].isin(toxic_hashtags.index)]
 hashtag_counts = df_filtered['hashtags'].value_counts()
 top_10_hashtags = hashtag_counts.head(5)
