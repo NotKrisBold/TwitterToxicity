@@ -3,17 +3,18 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 # Lettura file csv
-df = pd.read_csv('sample_vaccine_with_toxicity.csv', low_memory=False)
+df = pd.read_csv('sample_vaccine_with_toxicity.csv', low_memory=False, on_bad_lines='skip')
 
 # print(df.info())
 
 # Correzzione dati colonna is_reply
-df['is_reply'] = df['is_reply'].apply(lambda x: x if x in ['True', 'False'] else np.nan)
+df['is_reply'] = df['is_reply'].apply(lambda x: x if x in [True, False] else np.nan)
 print("is_reply:", df['is_reply'].unique())
 
 # Conversione hashtags in list
 df['hashtags'] = df['hashtags'].str.strip().str.replace(r'[\[\]\']', '', regex=True).str.split(",").apply(
     lambda x: ['#' + item.strip() for item in x] if isinstance(x, list) else x)
+
 print("Dataframe size:", len(df))
 
 # Conversione della colonna 'created_at' in datetime
