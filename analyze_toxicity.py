@@ -8,7 +8,7 @@ df = pd.read_csv('sample_vaccine_with_toxicity.csv', low_memory=False, on_bad_li
 # print(df.info())
 
 # Correzzione dati colonna is_reply
-df['is_reply'] = df['is_reply'].apply(lambda x: x if x in [True, False] else np.nan)
+df['is_reply'] = df['is_reply'].apply(lambda x: x if x in ['True', 'False'] else np.nan)
 print("is_reply:", df['is_reply'].unique())
 
 # Conversione hashtags in list
