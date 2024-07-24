@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 # Lettura file csv
-df = pd.read_csv('sample_vaccine_with_toxicity.csv', low_memory=False, on_bad_lines='skip')
+df = pd.read_csv('sample_vaccine_with_toxicity.csv', low_memory=False)
 
 # print(df.info())
 
