@@ -23,17 +23,16 @@ def extract_domain(url):
         return np.nan
 
 
-df1['urls'] = df1['urls'].apply(
-    lambda urls: [extract_domain(url) for url in urls] if isinstance(urls, list) else np.nan)
-
 df1_expanded = df1.explode('urls')
-df1_expanded.rename(columns={'urls': 'URL'}, inplace=True)
-df2.rename(columns={'Domain': 'URL'}, inplace=True)
+df1_expanded['Domain'] = df1_expanded['urls'].apply(
+    lambda url: extract_domain(url) if isinstance(url, str) else np.nan)
+
+df1.rename(columns={'urls': 'url'}, inplace=True)
 
 # Merge
-merged_df = pd.merge(df1_expanded, df2, on='URL', how='left')
+merged_df = pd.merge(df1_expanded, df2, on='Domain', how='left')
 
 # Salvataggio
-merged_df.to_csv('merged.csv', index=False)
+merged_df.to_csv('merged_1.csv', index=False)
 
 print("DataFrame finale salvato in 'merged.csv'")
